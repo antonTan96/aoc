@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advent of Code - Python Solutions Explorer</title>
+  <meta name="description" content="Explore Python solutions for each day of Advent of Code with syntax highlighting, side-by-side comparisons, and code search.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Prism.js for syntax highlighting with fallback -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎄</text></svg>">
+</head>
+<body class="theme-dark">
+  <div class="stars-bg" id="starsBg"></div>
+
+  <!-- Main App Container -->
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="app-header" id="appHeader">
+      <div class="header-left">
+        <button class="btn-icon mobile-menu-toggle" id="btnToggleSidebar" aria-label="Toggle navigation drawer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="brand">
+          <div class="brand-star">★</div>
+          <div class="brand-text">
+            <h1 class="brand-title">Advent of Code <span class="brand-badge">Python Archive</span></h1>
+            <p class="brand-subtitle">Daily Solutions & Code Explorer</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Day Strip -->
+      <nav class="days-strip-nav" id="daysStripNav" aria-label="Day quick selection">
+        <!-- Rendered dynamically -->
+      </nav>
+
+      <div class="header-right">
+        <!-- Global Search Trigger -->
+        <button class="search-trigger-btn" id="btnOpenSearch" title="Search code across all days (Ctrl+K)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="search-placeholder">Search code...</span>
+          <kbd class="shortcut-badge">Ctrl+K</kbd>
+        </button>
+
+        <!-- Stats Chips -->
+        <div class="stats-chip" id="statsChipDays" title="Total Days Solved">
+          <span class="stats-val" id="statDaysCount">--</span>
+          <span class="stats-lbl">Days</span>
+        </div>
+        <div class="stats-chip" id="statsChipFiles" title="Total Python Solutions">
+          <span class="stats-val" id="statFilesCount">--</span>
+          <span class="stats-lbl">Files</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <div class="workspace-body">
+      
+      <!-- Left Sidebar: Day List & Files Tree -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <span class="sidebar-title">Days & Solutions</span>
+            <span class="badge-accent" id="sidebarDaysBadge">0 Days</span>
+          </div>
+          <div class="sidebar-filter-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="sidebarFilterInput" placeholder="Filter day..." autocomplete="off">
+            <button class="btn-clear-filter" id="btnClearSidebarFilter" title="Clear filter" style="display: none;">×</button>
+          </div>
+        </div>
+
+        <!-- Days Accordion List -->
+        <div class="days-accordion-list" id="daysAccordionList">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <span>Loading solution repository...</span>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+          <div class="tech-stack-indicator">
+            <span class="dot-online"></span>
+            <span>Backend API: <code>/api/days</code></span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Code Viewer Area -->
+      <main class="code-workspace" id="codeWorkspace">
+        
+        <!-- Viewer Top Toolbar -->
+        <div class="viewer-toolbar" id="viewerToolbar">
+          <div class="toolbar-left">
+            <!-- Active Day / File Breadcrumbs -->
+            <div class="breadcrumbs">
+              <span class="breadcrumb-day" id="bcDay">Select a Day</span>
+              <span class="breadcrumb-sep">/</span>
+              <span class="breadcrumb-file" id="bcFile">Select a File</span>
+            </div>
+
+            <!-- Part 1 / Part 2 Quick Tabs -->
+            <div class="solution-tabs" id="solutionTabs">
+              <!-- Dynamically rendered tabs for attempt.py, attempt2.py etc -->
+            </div>
+          </div>
+
+          <div class="toolbar-right">
+            <!-- View Mode Switcher: Single vs Diff/Compare -->
+            <div class="view-mode-toggle" id="viewModeToggleGroup">
+              <button class="mode-btn active" id="btnModeSingle" title="Single Code View">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="9" x2="15" y1="9" y2="9"/><line x1="9" x2="15" y1="13" y2="13"/><line x1="9" x2="13" y1="17" y2="17"/></svg>
+                <span>Code</span>
+              </button>
+              <button class="mode-btn" id="btnModeDiff" title="Compare Part 1 & Part 2 (Diff view)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                <span>Compare Parts</span>
+              </button>
+            </div>
+
+            <!-- Code controls -->
+            <div class="code-actions">
+              <button class="action-btn" id="btnToggleWrap" title="Toggle Line Wrap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h15a3 3 0 1 1 0 6h-4M3 18h7"/><polyline points="16 16 14 18 16 20"/></svg>
+                <span class="action-label">Wrap</span>
+              </button>
+              <button class="action-btn" id="btnCopyCode" title="Copy code to clipboard">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                <span class="action-label">Copy</span>
+              </button>
+              <a class="action-btn" id="btnRawCode" target="_blank" title="Open raw text in new tab">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                <span class="action-label">Raw</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata Bar (Line count, Size, Language) -->
+        <div class="code-meta-bar" id="codeMetaBar">
+          <div class="meta-item">
+            <span class="meta-label">Language:</span>
+            <span class="meta-value badge-py" id="metaLang">Python</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Lines:</span>
+            <span class="meta-value" id="metaLines">0</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Size:</span>
+            <span class="meta-value" id="metaSize">0 B</span>
+          </div>
+          <div class="meta-item" id="metaOtherFiles">
+            <span class="meta-label">Related files:</span>
+            <span class="meta-chips-container" id="metaRelatedChips"></span>
+          </div>
+        </div>
+
+        <!-- Code Content Area -->
+        <div class="code-display-container" id="codeDisplayContainer">
+          
+          <!-- Single File View -->
+          <div class="single-code-view" id="singleCodeView">
+            <div class="code-scroll-pane" id="codeScrollPane">
+              <div class="line-numbers-col" id="lineNumbersCol"></div>
+              <pre class="code-pre" id="codePre"><code class="language-python" id="codeBlock"># Select a day and file from the left sidebar to view code.</code></pre>
+            </div>
+          </div>
+
+          <!-- Diff / Compare View (Hidden by default) -->
+          <div class="diff-view" id="diffView" style="display: none;">
+            <div class="diff-pane diff-pane-left">
+              <div class="diff-pane-header">
+                <span class="diff-title" id="diffLeftTitle">attempt.py (Part 1)</span>
+                <span class="diff-badge" id="diffLeftLines">-- lines</span>
+              </div>
+              <div class="diff-pane-content" id="diffLeftContent">
+                <div class="line-numbers-col" id="diffLeftGutter"></div>
+                <pre class="code-pre"><code class="language-python" id="diffLeftCode"></code></pre>
+              </div>
+            </div>
+
+            <div class="diff-pane diff-pane-right">
+              <div class="diff-pane-header">
+                <span class="diff-title" id="diffRightTitle">attempt2.py (Part 2)</span>
+                <span class="diff-badge" id="diffRightLines">-- lines</span>
+              </div>
+              <div class="diff-pane-content" id="diffRightContent">
+                <div class="line-numbers-col" id="diffRightGutter"></div>
+                <pre class="code-pre"><code class="language-python" id="diffRightCode"></code></pre>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Optional Input/Data Drawer (Collapsible bottom panel) -->
+        <div class="data-drawer" id="dataDrawer">
+          <div class="data-drawer-header" id="dataDrawerHeader">
+            <div class="drawer-title-group">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+              <span id="dataDrawerTitle">Input Data Preview (input.in / test.in)</span>
+            </div>
+            <button class="btn-toggle-drawer" id="btnToggleDrawer" title="Collapse / Expand">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <div class="data-drawer-content" id="dataDrawerContent" style="display: none;">
+            <div class="drawer-tabs" id="drawerTabs"></div>
+            <pre class="drawer-pre" id="drawerPre"><code id="drawerCode">Loading...</code></pre>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Search Modal Dialog -->
+  <div class="search-modal-backdrop" id="searchModalBackdrop" style="display: none;">
+    <div class="search-modal" id="searchModal">
+      <div class="search-modal-input-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="globalSearchInput" placeholder="Search Python code across all days (e.g., regex, split, while, ans)..." autocomplete="off">
+        <kbd class="esc-badge" id="btnCloseSearch">ESC</kbd>
+      </div>
+
+      <div class="search-modal-results" id="searchResultsContainer">
+        <div class="search-placeholder-state">
+          <span>Type at least 2 characters to search solution code across Day 1 to Day 12.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg" id="toastMsg">Code copied to clipboard!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

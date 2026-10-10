@@ -1,0 +1,16 @@
+services:
+  aoc-explorer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aoc-python-explorer:latest
+    container_name: aoc-explorer
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+    # Optional volume mount for live updates when adding new day solutions
+    # volumes:
+    #   - .:/app
