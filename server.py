@@ -275,16 +275,31 @@ def run():
     # Ensure web directory exists
     WEB_DIR.mkdir(exist_ok=True)
 
-    server_address = (HOST, PORT)
-    httpd = http.server.ThreadingHTTPServer(server_address, AoCRequestHandler)
-    print(f"==================================================")
-    print(f"🎄 Advent of Code Explorer server running at:")
-    print(f"👉 http://localhost:{PORT}")
-    print(f"==================================================")
+    port = int(os.environ.get("PORT", 8000))
+    host_env = os.environ.get("HOST", "").strip()
+    bind_target = host_env if host_env else None
+
+    try:
+        family, sockaddr = http.server._get_best_family(bind_target, port)
+    except Exception:
+        # Fallback to standard IPv4 if getaddrinfo fails
+        import socket
+        family = socket.AF_INET
+        sockaddr = ("0.0.0.0", port)
+
+    class DualStackHTTPServer(http.server.ThreadingHTTPServer):
+        address_family = family
+        daemon_threads = True
+
+    httpd = DualStackHTTPServer(sockaddr, AoCRequestHandler)
+    print(f"==================================================", flush=True)
+    print(f"🎄 Advent of Code Explorer server running on port {port}", flush=True)
+    print(f"👉 Bound to address: {sockaddr}", flush=True)
+    print(f"==================================================", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nShutting down server gracefully...")
+        print("\nShutting down server gracefully...", flush=True)
         httpd.server_close()
 
 
