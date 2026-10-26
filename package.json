@@ -1,0 +1,14 @@
+{
+  "name": "aoc-explorer",
+  "version": "1.0.0",
+  "description": "Advent of Code Python Solutions Explorer",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-data.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.86.0"
+  }
+}

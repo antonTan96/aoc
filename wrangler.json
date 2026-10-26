@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aoc-explorer",
+  "main": "src/index.js",
+  "compatibility_date": "2025-02-14",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./web",
+    "binding": "ASSETS"
+  },
+  "build": {
+    "command": "node scripts/build-data.js",
+    "watch_dir": "day_*"
+  }
+}

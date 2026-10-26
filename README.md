@@ -3,6 +3,7 @@
 A modern, high-performance web dashboard to explore, read, compare, and search Advent of Code Python solutions day-by-day.
 
 ![AoC Solutions Explorer](https://img.shields.io/badge/Advent_of_Code-Python_Solutions-00e699?style=flat-square&logo=python&logoColor=white)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-Ready-f38020?style=flat-square&logo=cloudflare&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=flat-square&logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-ffd166?style=flat-square)
 
@@ -62,6 +63,21 @@ docker build -t aoc-explorer .
 docker run -d -p 8000:8000 --name aoc-explorer aoc-explorer
 ```
 
+## ⚡ Running with Cloudflare Workers (Wrangler)
+
+Run locally using Wrangler:
+
+```bash
+# Start local development server
+npx wrangler dev
+```
+
+Deploy globally to Cloudflare Workers:
+
+```bash
+npx wrangler deploy
+```
+
 ---
 
 ## 📁 Project Structure
@@ -77,6 +93,14 @@ docker run -d -p 8000:8000 --name aoc-explorer aoc-explorer
 │   ├── index.html       # Single Page Application
 │   ├── style.css        # Responsive dark theme & styling
 │   └── app.js           # Client-side routing, API fetching & Prism highlight
+├── src/                 # Cloudflare Worker implementation
+│   ├── index.js         # Worker entry point (REST API & ASSETS delegation)
+│   ├── solutions.data.js# Bundled day metadata and solutions
+│   └── solutions.json   # Solutions dataset JSON
+├── scripts/
+│   └── build-data.js    # Data bundler script (runs on build/watch)
+├── wrangler.json        # Cloudflare Wrangler configuration
+├── package.json         # Node.js project manifest & scripts
 ├── server.py            # Backend Python server (REST API & static file server)
 ├── Dockerfile           # Production Docker container definition
 ├── docker-compose.yml   # Multi-environment container orchestration
